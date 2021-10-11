@@ -70,7 +70,7 @@ class Citizen{
         }
 
 
-        if (flag1 && flag2 && false){
+        if (flag1 && flag2 && flag3){
             CitRecs.add(this);
             System.out.println("Citizen Registered!");
         }
@@ -209,7 +209,7 @@ class SlotBooker{
     void byVaccine(String VaccName){
         for (int i=0; i< listofVacc.size();i++){
             if (listofVacc.get(i).getName().equals(VaccName)){
-                System.out.println(listofHosp.get(i).getU_id()+" "+listofHosp.get(i).getName());
+                System.out.println(String.format("%06d",listofHosp.get(i).getU_id())+" "+listofHosp.get(i).getName());
             }
         }
     }
@@ -367,6 +367,7 @@ public class CoWin_app {
         int ch,flag;
 
         while(true) {
+            System.out.println(bar);
             System.out.println(MenuOptions);
             System.out.println(bar);
 
@@ -431,7 +432,7 @@ public class CoWin_app {
                     int slot, CitIndex = -1;
                     System.out.print("Enter patient Unique ID: ");
                     Uid = scn.nextLine();
-                    if(Citizen.CheckID(Uid))
+                    if(!Citizen.CheckID(Uid))
                         break;
                     for(int i=0; i<Citizen.CitRecs.size(); i++){
                         if (Citizen.CitRecs.get(i).getU_id().equals(Uid)){
@@ -493,7 +494,7 @@ public class CoWin_app {
                     CitIndex = -1;
                     System.out.print("Enter patient Unique ID: ");
                     Uid = scn.nextLine();
-                    if(Citizen.CheckID(Uid))
+                    if(!Citizen.CheckID(Uid))
                         break;
 
                     for(int i=0; i<Citizen.CitRecs.size(); i++){
