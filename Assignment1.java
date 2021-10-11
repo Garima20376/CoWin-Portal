@@ -30,6 +30,9 @@ class Citizen{
         }
         return true;
     }
+    public int getDue(){
+        return VS.getDue_day();
+    }
     public void updateVS(String name, int day) {
         VS.setVaccineGiven(name);
         VS.updateStatus(day);
@@ -308,9 +311,14 @@ class VaccStatus{
     Vaccine VaccInfo;
 
     public VaccStatus(String Status, String VaccineGiven, int DosesGiven){
+        due_day = 0;
         this.Status = Status;
         this.VaccineGiven = VaccineGiven;
         this.DosesGiven = DosesGiven;
+    }
+
+    public int getDue_day() {
+        return due_day;
     }
 
     public void setVaccineGiven(String vaccineGiven) {
@@ -473,6 +481,10 @@ public class CoWin_app {
                         if (f) {
                             System.out.print("Choose Slot: ");
                             slot = Integer.parseInt(scn.nextLine());
+                            if (Citizen.CitRecs.get(CitIndex).getDue()!=0 && (Hospital.HospRecs.get(id-1).getListofSlots().get(slot-1).getDay() < Citizen.CitRecs.get(CitIndex).getDue())){
+                                System.out.println("Can't book a slot before due date!!");
+                                break;
+                            }
                             SB.Booked(Citizen.CitRecs.get(CitIndex), Hospital.HospRecs.get(id-1).getListofSlots().get(slot-1).getVaccName());
                             Hospital.HospRecs.get(id-1).getListofSlots().get(slot-1).decQty();
                             Citizen.CitRecs.get(CitIndex).updateVS(Hospital.HospRecs.get(id-1).getListofSlots().get(slot-1).getVaccName(),Hospital.HospRecs.get(id-1).getListofSlots().get(slot-1).getDay());
