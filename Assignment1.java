@@ -12,7 +12,7 @@ class Citizen{
     //store their data
     static ArrayList<Citizen> CitRecs = new ArrayList<Citizen>();
 
-    public void Citizen(){
+    public Citizen(){
         VS = new VaccStatus("REGISTERED", "None",0);
     }
 
@@ -23,6 +23,11 @@ class Citizen{
         return name;
     }
 
+    public static boolean CheckID(String id){
+        if(id.length()!=12)
+            return false;
+        return true;
+    }
     public void updateVS(String name, int day) {
         VS.setVaccineGiven(name);
         VS.updateStatus(day);
@@ -88,6 +93,12 @@ class Hospital{
         listofSlots = new ArrayList<Slot>();
     }
 
+    public static boolean CheckID(String id){
+        if(id.length()!=6)
+            return false;
+        return true;
+    }
+
     void createSlot(Slot slot){
         listofSlots.add(slot);
     }
@@ -103,6 +114,20 @@ class Hospital{
 
     void displayHospital(){
         System.out.println("Hospital Name: "+ name + ", PinCode: " + PinCode + ", Unique ID: "+String. format("%06d", U_id));
+    }
+
+    void displaySlots(){
+        int j=0;
+        for(int i=0; i<listofSlots.size(); i++){
+            if (listofSlots.get(i).getQty()!=0) {
+                j++;
+                System.out.print(i + 1 + ". ");
+                listofSlots.get(i).displaySlot(/*U_id, listofSlots.get(i).getVaccName()*/);
+            }
+        }
+        if (j==0){
+            System.out.print("No Slots Available");
+        }
     }
 
     public int getU_id() {
@@ -168,7 +193,7 @@ class SlotBooker{
     void byPincode(String PinCode){
         for (int i=0; i< listofHosp.size();i++){
             if (listofHosp.get(i).getPinCode().equals(PinCode)){
-                System.out.println(listofHosp.get(i).getU_id()+" "+listofHosp.get(i).getName());
+                System.out.println(String. format("%06d", listofHosp.get(i).getU_id())+" "+listofHosp.get(i).getName());
             }
         }
     }
@@ -184,8 +209,8 @@ class SlotBooker{
         for(int i=0; i<listofHosp.get(HospID-1).getListofSlots().size(); i++){
             if (listofHosp.get(HospID-1).getListofSlots().get(i).getQty()!=0) {
                 j++;
-                System.out.print(i + 1 + ". ");
-                listofHosp.get(HospID - 1).getListofSlots().get(i).displaySlot(HospID, listofHosp.get(HospID - 1).getListofSlots().get(i).getVaccName());
+                System.out.print(i + 1 + "-> ");
+                listofHosp.get(HospID - 1).getListofSlots().get(i).displaySlot(/*HospID, listofHosp.get(HospID - 1).getListofSlots().get(i).getVaccName()*/);
             }
         }
         if (j==0){
@@ -200,8 +225,8 @@ class SlotBooker{
         for(int i=0; i<listofHosp.get(HospID-1).getListofSlots().size(); i++){
             if (listofHosp.get(HospID-1).getListofSlots().get(i).getQty()!=0 && listofHosp.get(HospID-1).getListofSlots().get(i).getVaccName().equals(VaccName)) {
                 j++;
-                System.out.print(i + 1 + ". ");
-                listofHosp.get(HospID - 1).getListofSlots().get(i).displaySlot(HospID, listofHosp.get(HospID - 1).getListofSlots().get(i).getVaccName());
+                System.out.print(i + 1 + "-> ");
+                listofHosp.get(HospID - 1).getListofSlots().get(i).displaySlot(/*HospID, listofHosp.get(HospID - 1).getListofSlots().get(i).getVaccName()*/);
             }
         }
         if (j==0){
@@ -214,7 +239,7 @@ class SlotBooker{
 
 
     void Booked(Citizen C, String VaccName){
-        System.out.println(C.getName()+" vaccinated with ");
+        System.out.println(C.getName()+" vaccinated with "+ VaccName);
     }
 }
 
@@ -260,6 +285,9 @@ class Slot{
     public void displaySlot(int id, String VaccName){
         System.out.println("Slot added by Hospital "+String.format("%06d", id)+ " for day "+day+", Available Quantity: "+qty+" of Vaccine "+VaccName);
     }
+    public void displaySlot(){
+        System.out.println( "Day "+day+", Available Quantity: "+qty+" of Vaccine "+VaccName);
+    }
 }
 
 
@@ -304,7 +332,7 @@ class VaccStatus{
     }
 
     void display(){
-        System.out.println("");
+        System.out.println(Status+"\nVaccine Given: "+VaccineGiven+"\nNumber of Doses Given: "+ DosesGiven);
         if(Status == "PARTIALLY VACCINATED"){
             System.out.println("Due Day: "+due_day);
         }
@@ -363,10 +391,14 @@ public class CoWin_app {
                     break;
 
                 case 4:
-                    int id,n,day,qty, choice;
-                    String Vaccname;
+                    int n,day,qty,choice,id;
+                    String Vaccname,id_s;
                     System.out.print("Enter Hospital ID: ");
-                    id = Integer.parseInt(scn.nextLine());
+                    id_s = scn.nextLine();
+                    if(!Hospital.CheckID(id_s)){
+                        break;
+                    }
+                    id = Integer.parseInt();
                     System.out.print("Enter number of Slots to be added: ");
                     n = Integer.parseInt(scn.nextLine());
 
@@ -392,7 +424,6 @@ public class CoWin_app {
                     Uid = scn.nextLine();
                     for(int i=0; i<Citizen.CitRecs.size(); i++){
                         if (Citizen.CitRecs.get(i).getU_id().equals(Uid)){
-                            System.out.println(i);
                             CitIndex = i;
                             break;
                         }
@@ -422,18 +453,39 @@ public class CoWin_app {
                             f = SB.displaySlots(id,vacc);
                         }
                         if (f) {
-                            System.out.println("Choose Slot: ");
+                            System.out.print("Choose Slot: ");
                             slot = Integer.parseInt(scn.nextLine());
                             SB.Booked(Citizen.CitRecs.get(CitIndex), Hospital.HospRecs.get(id-1).getListofSlots().get(slot-1).getVaccName());
                             Hospital.HospRecs.get(id-1).getListofSlots().get(slot-1).decQty();
-                            Citizen.CitRecs.get(CitIndex).
+                            Citizen.CitRecs.get(CitIndex).updateVS(Hospital.HospRecs.get(id-1).getListofSlots().get(slot-1).getVaccName(),Hospital.HospRecs.get(id-1).getListofSlots().get(slot-1).getDay());
                         }
 
                     }
                     break;
                 case 6:
+                    System.out.print("Enter Hospital ID: ");
+
+                    id = Integer.parseInt(scn.nextLine());
+                    Hospital.HospRecs.get(id-1).displaySlots();
                     break;
                 case 7:
+                    CitIndex = -1;
+                    System.out.print("Enter patient Unique ID: ");
+                    Uid = scn.nextLine();
+
+                    for(int i=0; i<Citizen.CitRecs.size(); i++){
+                        if (Citizen.CitRecs.get(i).getU_id().equals(Uid)){
+                            CitIndex = i;
+                            break;
+                        }
+                    }
+                    if(CitIndex == -1){
+                        System.out.println("Citizen not registered!");
+                    }
+                    else{
+                        Citizen.CitRecs.get(CitIndex).VS.display();
+                    }
+
                     break;
                 case 8:
                     flag = 0;
