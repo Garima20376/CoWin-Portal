@@ -24,8 +24,10 @@ class Citizen{
     }
 
     public static boolean CheckID(String id){
-        if(id.length()!=12)
+        if(id.length()!=12) {
+            System.out.println("Unique ID should be 12 digits exactly!");
             return false;
+        }
         return true;
     }
     public void updateVS(String name, int day) {
@@ -46,6 +48,11 @@ class Citizen{
     public boolean toRegister(){
         boolean flag1 = false;
         boolean flag2 = true;
+        boolean flag3 = true;
+
+        if (!Citizen.CheckID(U_id))
+            flag3 = false;
+
         if (age>=18){
             flag1 = true;
         }
@@ -63,7 +70,7 @@ class Citizen{
         }
 
 
-        if (flag1 && flag2){
+        if (flag1 && flag2 && false){
             CitRecs.add(this);
             System.out.println("Citizen Registered!");
         }
@@ -94,8 +101,10 @@ class Hospital{
     }
 
     public static boolean CheckID(String id){
-        if(id.length()!=6)
+        if(id.length()!=6) {
+            System.out.println("Unique ID should be 6 digits exactly!");
             return false;
+        }
         return true;
     }
 
@@ -398,7 +407,7 @@ public class CoWin_app {
                     if(!Hospital.CheckID(id_s)){
                         break;
                     }
-                    id = Integer.parseInt();
+                    id = Integer.parseInt(id_s);
                     System.out.print("Enter number of Slots to be added: ");
                     n = Integer.parseInt(scn.nextLine());
 
@@ -422,6 +431,8 @@ public class CoWin_app {
                     int slot, CitIndex = -1;
                     System.out.print("Enter patient Unique ID: ");
                     Uid = scn.nextLine();
+                    if(Citizen.CheckID(Uid))
+                        break;
                     for(int i=0; i<Citizen.CitRecs.size(); i++){
                         if (Citizen.CitRecs.get(i).getU_id().equals(Uid)){
                             CitIndex = i;
@@ -442,14 +453,20 @@ public class CoWin_app {
                             pin = scn.nextLine();
                             SB.byPincode(pin);
                             System.out.print("Enter Hospital ID: ");
-                            id = Integer.parseInt(scn.nextLine());
+                            id_s = scn.nextLine();
+                            if(!Hospital.CheckID(id_s))
+                                break;
+                            id = Integer.parseInt(id_s);
                             f = SB.displaySlots(id);
                         } else if (choice == 2) {
                             System.out.print("Enter Vaccine Name: ");
                             vacc = scn.nextLine();
                             SB.byVaccine(vacc);
                             System.out.print("Enter Hospital ID: ");
-                            id = Integer.parseInt(scn.nextLine());
+                            id_s = scn.nextLine();
+                            if(!Hospital.CheckID(id_s))
+                                break;
+                            id = Integer.parseInt(id_s);
                             f = SB.displaySlots(id,vacc);
                         }
                         if (f) {
@@ -465,13 +482,19 @@ public class CoWin_app {
                 case 6:
                     System.out.print("Enter Hospital ID: ");
 
-                    id = Integer.parseInt(scn.nextLine());
+                    id_s = scn.nextLine();
+                    if(!Hospital.CheckID(id_s))
+                        break;
+
+                    id = Integer.parseInt(id_s);
                     Hospital.HospRecs.get(id-1).displaySlots();
                     break;
                 case 7:
                     CitIndex = -1;
                     System.out.print("Enter patient Unique ID: ");
                     Uid = scn.nextLine();
+                    if(Citizen.CheckID(Uid))
+                        break;
 
                     for(int i=0; i<Citizen.CitRecs.size(); i++){
                         if (Citizen.CitRecs.get(i).getU_id().equals(Uid)){
